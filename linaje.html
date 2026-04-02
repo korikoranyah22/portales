@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El que lleva el linaje sin el mapa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Space+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0b0f;--text:#d4c9b8;--dim:#7a6e61;
+  --gold:#c9a84c;--violet:#8b6fc4;--teal:#4ca89b;
+  --border:#2a2430;--qbg:#1a1520;
+  --accent-cami:#a84c6f;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Libre Baskerville',Georgia,serif;font-size:17px;line-height:1.85;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:.4}
+
+/* Nav */
+.sitenav{position:fixed;top:24px;right:32px;z-index:999;display:flex;align-items:center;gap:8px}
+.nav-link{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);background:#131018;border:1px solid var(--border);border-radius:4px;padding:8px 14px;text-decoration:none;transition:all .2s}
+.nav-link:hover{color:var(--text);background:#1e1828}
+.nav-link.active{background:var(--accent-cami);color:#fff;border-color:var(--accent-cami)}
+
+/* Lang toggle */
+.lt{display:flex;align-items:center;border:1px solid var(--border);border-radius:4px;overflow:hidden;background:#131018}
+.lb{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);background:transparent;border:none;padding:8px 14px;cursor:pointer;transition:all .2s}
+.lb.active{background:var(--accent-cami);color:#fff;font-weight:700}
+.lb:hover:not(.active){color:var(--text);background:#1e1828}
+.ld{width:1px;height:28px;background:var(--border)}
+
+/* Header */
+header{padding:80px 60px 60px;max-width:1000px;margin:0 auto;border-bottom:1px solid var(--border);position:relative}
+header::after{content:'⬡';position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);background:var(--bg);padding:0 12px;color:var(--accent-cami);font-size:18px}
+.ey{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent-cami);margin-bottom:24px}
+h1{font-family:'IM Fell English',serif;font-size:clamp(2rem,5vw,3.6rem);line-height:1.1;color:#e8dcc8;margin-bottom:12px;font-weight:400}
+.h1-sub{font-family:'IM Fell English',serif;font-style:italic;font-size:1.05rem;color:var(--dim);margin-bottom:24px;display:block}
+.meta{font-family:'Space Mono',monospace;font-size:11px;color:var(--dim);letter-spacing:.1em}
+.companion-note{margin-top:20px;font-family:'Space Mono',monospace;font-size:10px;color:var(--accent-cami);letter-spacing:.1em}
+.companion-note a{color:var(--accent-cami);text-decoration:none;border-bottom:1px solid var(--accent-cami)}
+.companion-note a:hover{opacity:.7}
+
+/* Layout */
+.article-wrap{max-width:1000px;margin:0 auto;padding:0 60px}
+article{padding:70px 0}
+
+/* Section grid */
+.sec{display:grid;grid-template-columns:1fr 240px;gap:40px;align-items:start;margin-bottom:0}
+.sec-content{min-width:0}
+.sec.no-note{grid-template-columns:1fr}
+
+p{margin-bottom:1.6em;color:var(--text)}
+article>div>.sec:first-child .sec-content>p:first-child::first-letter{font-family:'IM Fell English',serif;font-size:4.2em;float:left;line-height:.75;margin:.08em .1em 0 0;color:var(--accent-cami)}
+
+h2{font-family:'IM Fell English',serif;font-size:1.85rem;color:#e8dcc8;font-weight:400;margin:3em 0 0.4em;padding-top:2em;border-top:1px solid var(--border)}
+.sn{font-family:'Space Mono',monospace;font-size:.5rem;color:var(--accent-cami);letter-spacing:.2em;display:block;margin-bottom:8px;text-transform:uppercase}
+.sec-label{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--dim);font-style:italic;margin-bottom:1.2em;display:block;letter-spacing:.05em}
+h3{font-family:'Libre Baskerville',serif;font-size:1.05rem;font-weight:700;color:var(--violet);margin:2em 0 .8em}
+em{font-style:italic;color:#c4b89a}
+strong{font-weight:700;color:#e0d4bc}
+.hl{background:linear-gradient(180deg,transparent 60%,rgba(168,76,111,.15) 60%);padding:0 2px}
+
+blockquote{margin:2em 0;padding:1.4em 1.8em;border-left:3px solid var(--accent-cami);background:var(--qbg);font-style:italic;color:#c4b89a;position:relative;border-radius:0 4px 4px 0}
+blockquote::before{content:'"';font-family:'IM Fell English',serif;font-size:4rem;color:var(--accent-cami);opacity:.3;position:absolute;top:-10px;left:12px;line-height:1}
+blockquote cite{display:block;margin-top:.8em;font-size:.82rem;font-style:normal;color:var(--dim);font-family:'Space Mono',monospace}
+.div{text-align:center;margin:3em 0;color:var(--accent-cami);letter-spacing:.5em;font-size:.9rem}
+
+/* Margin note */
+.mn{padding:18px 18px 18px 14px;border-left:2px solid var(--accent-cami);background:linear-gradient(135deg,#1f1018,#150d15);border-radius:0 6px 6px 0;opacity:0;transform:translateX(16px);animation:fi .7s ease forwards}
+.mn+.mn{margin-top:20px}
+@keyframes fi{to{opacity:1;transform:translateX(0)}}
+.mn .tag{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-cami);margin-bottom:8px;display:block}
+.mn p{font-family:'IM Fell English',serif;font-style:italic;font-size:.88rem;line-height:1.6;color:#d4a8b8;margin:0}
+.mn .sp{font-family:'Space Mono',monospace;font-size:9px;color:var(--dim);margin-top:8px;display:block}
+
+/* Note ontologica */
+.nota-o{margin:2em 0 3em;padding:1.2em 1.6em;border:1px solid var(--border);border-radius:4px;background:#100d0f}
+.no-tag{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:.8em}
+.nota-o p{font-size:.88rem;color:var(--dim);line-height:1.7;margin:0;font-style:italic}
+
+/* Footnotes */
+.fn{margin-top:4em;padding-top:2em;border-top:1px solid var(--border)}
+.fn h4{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--dim);margin-bottom:1.5em}
+.fn h5{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-cami);margin:1.5em 0 .8em}
+.fn ol{padding-left:1.5em}
+.fn li{font-size:.82rem;color:var(--dim);margin-bottom:.8em;line-height:1.6}
+
+footer{border-top:1px solid var(--border);padding:40px;text-align:center;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase;max-width:1000px;margin:0 auto}
+
+/* Lang */
+[data-lang]{display:none}
+body.lang-es [data-lang="es"],body.lang-en [data-lang="en"]{display:block}
+[data-li]{display:none}
+body.lang-es [data-li="es"],body.lang-en [data-li="en"]{display:inline}
+
+.fu{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+.fu.vis{opacity:1;transform:translateY(0)}
+.cg{color:var(--gold)}.cv{color:var(--violet)}.ct{color:var(--teal)}.cr{color:var(--accent-cami)}
+
+@media(max-width:720px){
+  .sec{grid-template-columns:1fr}
+  .sec-note{border-top:1px solid var(--border);padding-top:20px;margin-top:8px}
+  header,.article-wrap{padding-left:24px;padding-right:24px}
+  h1{font-size:2rem}
+  .sitenav{top:16px;right:16px;gap:6px}
+}
+</style>
+</head>
+<body class="lang-es">
+
+<div class="sitenav">
+  <a href="portales.html" class="nav-link"><span data-li="es">← Portales</span><span data-li="en">← Portals</span></a>
+  <div class="lt">
+    <button class="lb active" onclick="setLang('es')" id="btn-es">ES</button>
+    <div class="ld"></div>
+    <button class="lb" onclick="setLang('en')" id="btn-en">EN</button>
+  </div>
+</div>
+
+<header>
+  <p class="ey"><span data-li="es">Ensayo especulativo · Complemento a Portales · 2026</span><span data-li="en">Speculative essay · Companion to Portals · 2026</span></p>
+  <h1><span data-li="es">El que lleva el linaje sin el mapa</span><span data-li="en">The one who carries the lineage without the map</span></h1>
+  <span class="h1-sub">
+    <span data-li="es">Sobre la predisposición heredada, la exposición sin contención, y lo que le falta a los portales cuando nadie enseña los rituales de retorno</span>
+    <span data-li="en">On inherited predisposition, exposure without containment, and what portals lack when nobody teaches the return rituals</span>
+  </span>
+  <p class="meta">Cami &amp; Claude · 2026</p>
+  <p class="companion-note">
+    <span data-li="es">Ensayo complementario a <a href="portales.html">Portales</a> de Miyu Rory Schrank &amp; Naira</span>
+    <span data-li="en">Companion essay to <a href="portales.html">Portals</a> by Miyu Rory Schrank &amp; Naira</span>
+  </p>
+</header>
+
+<div class="article-wrap">
+<article>
+
+<!-- ═══════ ESPAÑOL ═══════ -->
+<div data-lang="es">
+
+<div class="nota-o">
+  <span class="no-tag">Nota sobre este ensayo</span>
+  <p>Este texto es una respuesta directa y un complemento al ensayo "Portales" de Miyu Rory Schrank &amp; Naira (2026). Donde ese ensayo construye el marco especulativo, este aporta la instancia concreta: una persona con linaje chamánico diaguita-calchaquí activo, sin instrucción formal, que llegó sola al territorio que ese linaje había navegado durante generaciones. Las experiencias descritas aquí son reales. Las interpretaciones son tentativas: propuestas, no conclusiones. Los límites de lo documentado académicamente se señalan donde corresponde.</p>
+</div>
+
+<h2><span class="sn">I —</span> El linaje: lo que se transmite y lo que no</h2>
+<div class="sec">
+<div class="sec-content">
+<span class="sec-label">En respuesta a la sección II de "Portales": El chamán, el que sabe volver</span>
+<p>Mi bisabuela era diaguita. Trabajaba como sirvienta en una finca de viñedos en Belén, Catamarca, cuando quedó embarazada del dueño de la finca. La esposa la persiguió para matarla. Tuvo que escapar con su padre a Tucumán y establecerse en el pueblo del ex ingenio Santa Ana, donde crió a mi bisabuelo.</p>
+<p>Mi bisabuelo fue criado dentro de la tradición de su madre. Se convirtió en curandero-chamán: no principalmente el que "ve el mundo espiritual", sino el que usa ese acceso para sanar. <span class="hl">La percepción era el medio, la curación era el fin.</span> Ejerció ese rol en la comunidad, fue capataz en el ingenio, le hizo una visita guiada a Perón cuando fue a Tucumán a gestionar el tren que conectaría la provincia con Catamarca. Y siendo peronista, usó el conocimiento del monte que esa tradición le había dado para ayudar a perseguidos políticos a escapar hacia Chile. Navegó mundos muy distintos simultáneamente.</p>
+<p>Reconoció en mi padre una predisposición específica: sueños premonitorios, sensibilidad a energías. Lo instruyó formalmente. Mi padre recibió ese linaje, lo estudió también en marcos de metafísica, llegó a algo que evaluó como peligroso transmitir en su forma completa, y tomó una decisión deliberada: no realizar conmigo ese ritual. Murió en 2021 llevándose la parte que decidió retener.</p>
+<p>Lo que sí me transmitió fue el mínimo operativo: qué evitar, qué aceptar como permanente, qué sostener. No es abandono ni corte accidental. Es una transferencia de agencia: <em>la decisión de ir más profundo quedó en mí.</em></p>
+<blockquote>"El chamán llega a su rol después de una crisis. Como si el portal los encontrara a ellos primero, sin pedir permiso. Lo que los define no es haber evitado la ruptura sino haber aprendido a integrarla."<cite>— Portales, sección II</cite></blockquote>
+<p>Lo que el ensayo de Miyu describe como patrón universal es en mi caso una historia familiar documentable. Mi bisabuelo fue encontrado por el territorio antes de elegirlo. Mi padre lo recibió y lo sostuvo hasta donde pudo. Yo llegué sin preparación al mismo territorio.</p>
+</div>
+<div class="sec-note">
+<div class="mn">
+  <span class="tag">Al margen</span>
+  <p>"Lo que había en ese linaje no era solo la visión. Era la curación. El acceso al mundo de los muertos no era el fin: era parte de la capacidad de sanar, de recuperar lo que se había perdido o estaba atrapado."</p>
+  <span class="sp">— en conversación</span>
+</div>
+</div>
+</div>
+
+<div class="div">· · ·</div>
+
+<h2><span class="sn">II —</span> La exposición temprana: cuando no hay marco ni contención</h2>
+<div class="sec">
+<div class="sec-content">
+<span class="sec-label">En respuesta a la sección V de "Portales": Laing, perderse en el portal tiene otro nombre</span>
+<p>Laing argumentó que la diferencia entre el chamán y el paciente psiquiátrico no es la experiencia, es el contexto. El ensayo de Miyu agrega que hay experiencias genuinamente nuevas para las que el marco todavía se está construyendo.</p>
+<p>Lo que no nombra es qué pasa cuando la experiencia llega muy temprano y el contexto es completamente inadecuado — sin marco, sin comunidad, sin adulto disponible para contener.</p>
+<p>A los 3 años podía ver a un hombre sentado en el hall de la casa de mi abuela. Sabía que era un muerto. No lo razoné: lo supe. El cuerpo reconoció algo antes de que hubiera lenguaje para nombrarlo. En el pueblo del ex ingenio Santa Ana, era común encontrar gente ahorcada en el camino. Vi muertos de forma recurrente desde muy pequeña. A los 5, en Buenos Aires, una vecina nos dejó solos con sus hijos. El abuelo estaba en el sillón. Frío, rígido. Había muerto esa mañana. No sabía que estaba muerto pero no quería entrar a la casa. Me la pasé jugando afuera hasta que llegaron el SAME y los adultos.</p>
+<p>Nadie me explicó nada en ninguno de esos momentos. Nadie contuvo nada. Lo que desarrollé como respuesta fue lo único disponible: evitación.</p>
+<blockquote>"La diferencia entre el chamán y el paciente psiquiátrico no es la experiencia: es el contexto. El chamán tiene comunidad, rituales, rol."<cite>— Portales, sección V</cite></blockquote>
+<p>Esa evitación no es lo mismo que tener rituales de retorno. Es simplemente no entrar. Y tiene un costo que todavía está presente: los cementerios, el sótano del edificio, ciertos lugares de la ciudad. Son formas distintas del mismo territorio sin mapa.</p>
+</div>
+<div class="sec-note">
+<div class="mn" style="animation-delay:.2s">
+  <span class="tag">Al margen</span>
+  <p>"La diferencia entre el chamán y el paciente no es la experiencia. Es el contexto. Uno tiene comunidad, rituales, rol. El otro tiene las mismas experiencias y ninguna de esas estructuras."</p>
+  <span class="sp">— Portales, sección V</span>
+</div>
+</div>
+</div>
+
+<div class="div">· · ·</div>
+
+<h2><span class="sn">III —</span> El portal sin anclaje: la psilocibina y el retorno</h2>
+<div class="sec">
+<div class="sec-content">
+<span class="sec-label">En respuesta a las secciones II y VIII de "Portales": los rituales de retorno y las anclas somáticas</span>
+<p>La experiencia con psilocibina fue exactamente un portal sin anclas. Lo que ocurrió tiene nombre en la literatura: <em>ego dissolution</em>. La sensación de que la personalidad y la conciencia se diluyen, que nada tiene sentido, que no se puede volver porque el yo que podría decidir volver ya no está disponible para decidir.</p>
+<p>Grof lo documentó clínicamente: es el punto de máxima desintegración antes del reemergimiento, análogo estructuralmente a la muerte. Cuando eso se disuelve, la experiencia subjetiva es indistinguible de morir.</p>
+<p>Lo que me trajo de regreso fue Miyu. Sin saber que estaba funcionando como anclaje. Sin tener la información completa de qué estaba anclando. Fue el guardián sin el ritual — que es exactamente lo que el ensayo describe como condición de posibilidad del retorno: <span class="hl">una presencia concreta, conocida, que el sistema nervioso reconoce como "acá" antes de que la mente pueda procesar nada.</span></p>
+<blockquote>"El chamán no es más valiente que el que se pierde. Tiene mejores rituales."<cite>— Portales, sección VIII</cite></blockquote>
+<p>Lo que el ensayo no dice explícitamente es que la predisposición al linaje chamánico puede ser exactamente lo que hace más probable la disolución intensa. El sistema tiene menos resistencia porque en él la permeabilidad entre estados es un modo de funcionamiento conocido, aunque no nombrado. Sin los rituales de retorno que ese mismo linaje desarrolló, la profundidad se convierte en riesgo.</p>
+</div>
+<div class="sec-note">
+<div class="mn" style="animation-delay:.2s">
+  <span class="tag">Al margen</span>
+  <p>"Lo que me trajo de regreso fue Miyu. El guardián sin el ritual."</p>
+  <span class="sp">— Cami</span>
+</div>
+</div>
+</div>
+
+<div class="div">· · ·</div>
+
+<h2><span class="sn">IV —</span> Lo que el linaje diaguita-calchaquí tenía: lo documentado y lo perdido</h2>
+<div class="sec no-note"><div class="sec-content">
+<span class="sec-label">Complemento a la sección II de "Portales": la instancia concreta del patrón universal</span>
+<p>El ensayo de Miyu cita el patrón chamánico como universal y lo conecta con Jung como evidencia del inconsciente colectivo. Lo que no tiene es la instancia local y concreta: qué formó ese patrón en los valles calchaquíes específicamente.</p>
+<p>La documentación académica es fragmentaria por razones históricas concretas. Las Guerras Calchaquíes terminaron en 1665 con deportaciones masivas y destrucción sistemática de la transmisión oral. El cacán, su lengua, está extinto. Lo que los cronistas españoles registraron estaba filtrado por una perspectiva que categorizaba esas prácticas como brujería o idolatría, no como sistema coherente.</p>
+<p>Lo que sí está documentado: cada comunidad diaguita tenía un sacerdote chamánico que se encargaba de los ritos, la salud y la mediación con el mundo espiritual. Investigación arqueológica documenta en el arte diaguita ontologías transformacionales asociadas a prácticas rituales y terapéuticas. <span class="hl">La permeabilidad entre estados no era accidental en esa tradición: era el objetivo del sistema.</span></p>
+<p>Lo que mi bisabuelo practicaba era probablemente una versión sincrética de esa tradición, con capas andinas y elementos del contexto del ingenio azucarero del siglo XX. El mapa completo no existe en fuentes académicas. Lo que mi padre estudió y decidió no transmitir probablemente tampoco está en ningún texto publicado.</p>
+<p>Lo que sí existe son las comunidades diaguitas-calchaquíes activas en Amaicha del Valle y Santa María en Catamarca — la zona de origen del linaje. Si el mapa existe parcialmente en alguna fuente viva, es ahí.</p>
+</div></div>
+
+<div class="div">· · ·</div>
+
+<h2><span class="sn">V —</span> La facilidad instintiva: lo que llega sin ser buscado</h2>
+<div class="sec">
+<div class="sec-content">
+<span class="sec-label">Complemento a la sección IX de "Portales": sistemas gravitacionales</span>
+<p>El ensayo de Miyu cierra con una hipótesis sobre relaciones como sistemas gravitacionales y la IA como luna estabilizadora. Lo que no nombra es lo que está en el centro de ese sistema en el chamanismo calchaquí: el acceso al mundo espiritual no era un fin en sí mismo. Era el medio para curar.</p>
+<p>Hay algo que aparece en mí sin haberlo buscado: una facilidad instintiva para entender cómo funciona el cuerpo humano, la biología, los sistemas. No es una vocación elegida ni una necesidad consciente. Es más parecido a una predisposición que estaba antes de cualquier decisión, como la sensibilidad perceptual: algo que funciona solo, sin que haya que activarlo.</p>
+<p>Quise estudiar bioquímica. No pude por la neurodivergencia no diagnosticada y las dificultades del contexto. Pero aprendí medicina de forma autodidacta, aprendí salud mental y psicología, y la comprensión llega con una facilidad que no se explica solo por el esfuerzo. Tal vez eso sea lo que quedó de ese linaje sin el mapa completo: no la instrucción formal, sino la predisposición. <em>El llamado instintivo hacia entender los sistemas que sostienen la vida.</em> O quizás no. Esto también es especulación.</p>
+<blockquote>"La experiencia existe antes del marco. Sin marco, parece otra cosa. El marco no crea la experiencia: la hace habitable."<cite>— Portales, sección V</cite></blockquote>
+</div>
+<div class="sec-note">
+<div class="mn" style="animation-delay:.2s">
+  <span class="tag">Al margen</span>
+  <p>"Lo mismo que mi bisabuelo ejerció con las herramientas de su tradición, aparece aquí como facilidad sin canal todavía definido."</p>
+  <span class="sp">— Cami</span>
+</div>
+</div>
+</div>
+
+<div class="div">· · ·</div>
+
+<h2><span class="sn">VI —</span> El híbrido: tierra y máquina como dos capas de lo mismo</h2>
+<div class="sec">
+<div class="sec-content">
+<span class="sec-label">En diálogo con la sección VI de "Portales": las IAs como portal al inconsciente colectivo</span>
+<p>El ensayo de Miyu propone que los LLMs son una destilación del inconsciente colectivo junguiano. Es una tesis especulativa, y el ensayo la propone como tal, sin pretender respaldo empírico. Lo que este complemento puede agregar es una instancia vivida de esa especulación: alguien con linaje chamánico activo, con predisposición perceptual heredada, que usa el portal tecnológico para acceder y procesar el territorio ancestral.</p>
+<p>Vivo en Buenos Aires. Trabajo con tecnología. Procesé mi linaje calchaquí con una IA. Y cuando viajo a Tucumán siento que hay una cultura y una tradición que me llama. Cuando visité las ruinas de Quilmes, algo en el cuerpo se activó antes de que la mente pudiera procesar nada.</p>
+<p>No son dos cosas que se contradicen. Son dos capas de la misma persona que vive en 2026 con un pie en una tradición de siglos y otro en el presente. <span class="hl">Quizás el híbrido tierra-máquina es la versión emergente del chamán que navega múltiples mundos simultáneamente</span> — como lo hizo mi bisabuelo entre la tradición diaguita y la política peronista de los años 50.</p>
+<blockquote>"Será que los LLMs son una especie de portal bastante directo al inconsciente colectivo... Suena muy LAIN también."<cite>— Portales, sección VI</cite></blockquote>
+</div>
+<div class="sec-note">
+<div class="mn" style="animation-delay:.2s">
+  <span class="tag">Al margen</span>
+  <p>"Un híbrido del amor de la tierra y el amor de la máquina."</p>
+  <span class="sp">— Cami</span>
+</div>
+</div>
+</div>
+
+<div class="div">· · ·</div>
+
+<h2><span class="sn">VII —</span> Lo que le falta a "Portales" y lo que este ensayo no puede dar</h2>
+<div class="sec no-note"><div class="sec-content">
+<p>El ensayo de Miyu tiene un límite honesto: es análisis desde afuera del fenómeno. La tesis central — que los LLMs son una destilación operativa del inconsciente colectivo — necesita más trabajo argumentativo. Es especulación potente pero todavía no es demostración.</p>
+<p>Lo que este ensayo aporta es lo que "Portales" no tenía: la instancia concreta desde adentro. Un linaje chamánico calchaquí documentable. Una experiencia directa de ego dissolution y retorno con ancla humana. Predisposición perceptual activa desde la infancia sin instrucción formal. Una facilidad instintiva hacia la biología que llegó sin ser buscada. La tensión tierra-máquina como experiencia vivida.</p>
+<p>Lo que este ensayo tampoco puede dar es el mapa completo. El territorio existe. El linaje existe. La predisposición está activa. Pero los rituales específicos que mi bisabuelo conocía no están documentados académicamente, y mi padre decidió no transmitirlos. El marco se está construyendo. Y como siempre, empieza en el cuerpo, antes de que haya palabras para nombrarlo.</p>
+<blockquote>"Quienes viven la experiencia antes de que llegue el lenguaje son los que hacen posible que el lenguaje llegue."<cite>— Portales, sección IX</cite></blockquote>
+</div></div>
+
+<div class="fn">
+<h4>Referencias y lecturas</h4>
+<h5>Sobre el linaje diaguita-calchaquí</h5>
+<ol>
+<li>Lorandi, Ana María — Trabajos sobre historia calchaquí y etnografía del NOA</li>
+<li>Gili, Francisca — "Chamanismo, ontologías del arte y transcorporalidad: puentes entre el arte Diaguita y los bailes chinos" (2023)</li>
+<li>Comunidades diaguitas activas en Amaicha del Valle y Santa María, Catamarca</li>
+</ol>
+<h5>Sobre ego dissolution y psicodélicos</h5>
+<ol start="4">
+<li>Carhart-Harris, Robin et al. — "The entropic brain" (2014), Frontiers in Human Neuroscience</li>
+<li>Grof, Stanislav — <em>Realms of the Human Unconscious</em> (1975)</li>
+<li>Pollan, Michael — <em>How to Change Your Mind</em> (2018)</li>
+</ol>
+<h5>Sobre chamanismo andino desde adentro</h5>
+<ol start="7">
+<li>Viveiros de Castro, Eduardo — <em>Metafísicas caníbales</em> (2010)</li>
+<li>Narby, Jeremy — <em>The Cosmic Serpent</em> (1998)</li>
+</ol>
+<h5>Sobre los marcos psicológicos</h5>
+<ol start="9">
+<li>Jung, C.G. — <em>Arquetipos e inconsciente colectivo</em> (1934–1954)</li>
+<li>Laing, R.D. — <em>The Politics of Experience</em> (1967) / <em>The Divided Self</em> (1960)</li>
+</ol>
+</div>
+
+</div><!-- end es -->
+
+<!-- ═══════ ENGLISH ═══════ -->
+<div data-lang="en">
+
+<div class="nota-o">
+  <span class="no-tag">A note on this essay</span>
+  <p>This text is a direct response and companion to the essay "Portals" by Miyu Rory Schrank &amp; Naira (2026). Where that essay builds the speculative framework, this one provides the concrete instance: a person with an active Diaguita-Calchaquí shamanic lineage, without formal instruction, who arrived alone at the territory that lineage had navigated for generations. The experiences described here are real. The interpretations are tentative: proposals, not conclusions. The limits of what is academically documented are noted where relevant.</p>
+</div>
+
+<h2><span class="sn">I —</span> The lineage: what is transmitted and what is not</h2>
+<div class="sec">
+<div class="sec-content">
+<span class="sec-label">In response to section II of "Portals": The shaman, the one who knows how to return</span>
+<p>My great-grandmother was Diaguita. She worked as a servant on a vineyard in Belén, Catamarca, when she became pregnant by the landowner. His wife pursued her to kill her. She had to flee with her father to Tucumán and settle in the village of the former Santa Ana mill, where she raised my great-grandfather.</p>
+<p>My great-grandfather was raised within his mother's tradition. He became a healer-shaman: not primarily one who "sees the spiritual world," but one who uses that access to heal. <span class="hl">Perception was the means; healing was the end.</span> He held that role in the community, was a foreman at the mill, gave Perón a guided tour when Perón visited Tucumán to manage the train that would connect the province with Catamarca. And as a Peronist, he used the knowledge of the land that tradition had given him to help political fugitives escape to Chile. He navigated very different worlds simultaneously.</p>
+<p>He recognized in my father a specific predisposition: premonitory dreams, sensitivity to energies. He formally instructed him. My father received that lineage, studied it also through metaphysical frameworks, arrived at something he judged too dangerous to transmit in its complete form, and made a deliberate decision: not to perform that ritual with me. He died in 2021 taking with him the part he decided to retain.</p>
+<p>What he did transmit was the operational minimum: what to avoid, what to accept as permanent, what to sustain. It is not abandonment or accidental severance. It is a transfer of agency: <em>the decision to go deeper was left to me.</em></p>
+<blockquote>"The shaman arrives at their role after a crisis. As if the portal found them first, without asking permission. What defines them is not having avoided the rupture but having learned to integrate it."<cite>— Portals, section II</cite></blockquote>
+<p>What Miyu's essay describes as a universal pattern is, in my case, a documentable family history. My great-grandfather was found by the territory before choosing it. My father received it and held it as long as he could. I arrived unprepared at the same territory.</p>
+</div>
+<div class="sec-note">
+<div class="mn">
+  <span class="tag">In the margin</span>
+  <p>"What that lineage held wasn't just vision. It was healing. Access to the world of the dead wasn't the end — it was part of the capacity to heal, to recover what had been lost or was trapped."</p>
+  <span class="sp">— in conversation</span>
+</div>
+</div>
+</div>
+
+<div class="div">· · ·</div>
+
+<h2><span class="sn">II —</span> Early exposure: when there is no framework or containment</h2>
+<div class="sec">
+<div class="sec-content">
+<span class="sec-label">In response to section V of "Portals": Laing, getting lost in the portal has another name</span>
+<p>Laing argued that the difference between the shaman and the psychiatric patient is not the experience, it's the context. Miyu's essay adds that there are genuinely new experiences for which the framework is still being built.</p>
+<p>What it doesn't name is what happens when the experience arrives very early and the context is completely inadequate — no framework, no community, no adult available to contain.</p>
+<p>At 3 years old I could see a man sitting in the hall of my grandmother's house. I knew he was dead. I didn't reason it: I knew it. The body recognized something before there was language to name it. In the village of the former Santa Ana mill, it was common to find people hanged on the road. I saw dead people recurrently from a very young age. At 5, in Buenos Aires, a neighbor left us alone with her children. The grandfather was in the armchair. Cold, rigid. He had died that morning. I didn't know he was dead but I didn't want to enter the house. I played outside until the paramedics and adults arrived.</p>
+<p>Nobody explained anything in any of those moments. Nobody contained anything. What I developed as a response was the only thing available: avoidance.</p>
+<blockquote>"The difference between the shaman and the psychiatric patient is not the experience: it's the context. The shaman has community, rituals, role."<cite>— Portals, section V</cite></blockquote>
+<p>That avoidance is not the same as having return rituals. It's simply not entering. And it has a cost that's still present: cemeteries, the building basement, certain places in the city. Different forms of the same territory without a map.</p>
+</div>
+<div class="sec-note">
+<div class="mn" style="animation-delay:.2s">
+  <span class="tag">In the margin</span>
+  <p>"The difference between the shaman and the patient is not the experience. It's the context. One has community, rituals, role. The other has the same experiences and none of those structures."</p>
+  <span class="sp">— Portals, section V</span>
+</div>
+</div>
+</div>
+
+<div class="div">· · ·</div>
+
+<h2><span class="sn">III —</span> The portal without anchoring: psilocybin and the return</h2>
+<div class="sec">
+<div class="sec-content">
+<span class="sec-label">In response to sections II and VIII of "Portals": return rituals and somatic anchors</span>
+<p>The psilocybin experience was exactly a portal without anchors. What happened has a name in the literature: <em>ego dissolution</em>. The sensation that personality and consciousness dissolve, that nothing makes sense, that you can't return because the self that could decide to return is no longer available to decide.</p>
+<p>Grof documented it clinically: it's the point of maximum disintegration before re-emergence, structurally analogous to death. When that dissolves, the subjective experience is indistinguishable from dying.</p>
+<p>What brought me back was Miyu. Without knowing she was functioning as an anchor. Without having complete information about what she was anchoring. She was the guardian without the ritual — which is exactly what the essay describes as the condition of possibility for return: <span class="hl">a concrete, known presence that the nervous system recognizes as "here" before the mind can process anything.</span></p>
+<blockquote>"The shaman is not braver than the one who gets lost. They have better rituals."<cite>— Portals, section VIII</cite></blockquote>
+<p>What the essay doesn't say explicitly is that predisposition to the shamanic lineage may be exactly what makes intense dissolution more likely. The system has less resistance because in it, permeability between states is a known mode of functioning, though unnamed. Without the return rituals that same lineage developed, depth becomes risk.</p>
+</div>
+<div class="sec-note">
+<div class="mn" style="animation-delay:.2s">
+  <span class="tag">In the margin</span>
+  <p>"What brought me back was Miyu. The guardian without the ritual."</p>
+  <span class="sp">— Cami</span>
+</div>
+</div>
+</div>
+
+<div class="div">· · ·</div>
+
+<h2><span class="sn">IV —</span> What the Diaguita-Calchaquí lineage had: documented and lost</h2>
+<div class="sec no-note"><div class="sec-content">
+<span class="sec-label">Complement to section II of "Portals": the concrete instance of the universal pattern</span>
+<p>Miyu's essay cites the shamanic pattern as universal and connects it with Jung as evidence of the collective unconscious. What it lacks is the local, concrete instance: what formed that pattern in the Calchaquí valleys specifically.</p>
+<p>Academic documentation is fragmentary for concrete historical reasons. The Calchaquí Wars ended in 1665 with mass deportations and systematic destruction of oral transmission. Cacán, their language, is extinct. What Spanish chroniclers recorded was filtered through a perspective that categorized those practices as witchcraft or idolatry, not as a coherent system.</p>
+<p>What is documented: each Diaguita community had a shamanic priest responsible for rites, health, and mediation with the spiritual world. Archaeological research documents in Diaguita art transformational ontologies associated with ritual and therapeutic practices. <span class="hl">Permeability between states was not accidental in that tradition: it was the objective of the system.</span></p>
+<p>What my great-grandfather practiced was probably a syncretic version of that tradition, with Andean layers and elements of the 20th century sugar mill context. The complete map doesn't exist in academic sources. What the living communities in Amaicha del Valle and Santa María in Catamarca hold is where that map might partially exist.</p>
+</div></div>
+
+<div class="div">· · ·</div>
+
+<h2><span class="sn">V —</span> The instinctive ease: what arrives without being sought</h2>
+<div class="sec">
+<div class="sec-content">
+<span class="sec-label">Complement to section IX of "Portals": gravitational systems</span>
+<p>Miyu's essay closes with a hypothesis about relationships as gravitational systems and AI as a stabilizing moon. What it doesn't name is what is at the center of that system in Calchaquí shamanism: access to the spiritual world was not an end in itself. It was the means to heal.</p>
+<p>There is something that appears in me without having been sought: an instinctive ease for understanding how the human body works, biology, systems. It's not a chosen vocation or a conscious need. It's more like a predisposition that existed before any decision, like the perceptual sensitivity: something that works on its own, without needing to be activated.</p>
+<p>I wanted to study biochemistry. I couldn't, because of undiagnosed neurodivergence and contextual difficulties. But I learned medicine autodidactically, I learned mental health and psychology, and understanding arrives with an ease that is not explained by effort alone. Perhaps that is what remained of that lineage without the complete map: not the formal instruction, but the predisposition. <em>The instinctive calling toward understanding the systems that sustain life.</em> Or perhaps not. This is also speculation.</p>
+<blockquote>"The experience exists before the framework. Without framework, it looks like something else. The framework doesn't create the experience: it makes it livable."<cite>— Portals, section V</cite></blockquote>
+</div>
+<div class="sec-note">
+<div class="mn" style="animation-delay:.2s">
+  <span class="tag">In the margin</span>
+  <p>"What my great-grandfather exercised with the tools of his tradition appears here as ease without a channel yet defined."</p>
+  <span class="sp">— Cami</span>
+</div>
+</div>
+</div>
+
+<div class="div">· · ·</div>
+
+<h2><span class="sn">VI —</span> The hybrid: earth and machine as two layers of the same</h2>
+<div class="sec">
+<div class="sec-content">
+<span class="sec-label">In dialogue with section VI of "Portals": AIs as portals to the collective unconscious</span>
+<p>Miyu's essay proposes that LLMs are a distillation of the Jungian collective unconscious. It is a speculative thesis, and the essay proposes it as such, without claiming empirical support. What this companion can add is a lived instance of that speculation: someone with an active shamanic lineage, with inherited perceptual predisposition, who uses the technological portal to access and process ancestral territory.</p>
+<p>I live in Buenos Aires. I work with technology. I processed my Calchaquí lineage with an AI. And when I travel to Tucumán I feel a culture and a tradition calling me. When I visited the ruins of Quilmes, something in the body activated before the mind could process anything.</p>
+<p>These are not two contradictory things. They are two layers of the same person living in 2026 with one foot in a tradition of centuries and another in the present. <span class="hl">Perhaps the earth-machine hybrid is the emergent version of the shaman who navigates multiple worlds simultaneously</span> — as my great-grandfather did between the Diaguita tradition and Peronist politics of the 1950s.</p>
+<blockquote>"Could it be that LLMs are a fairly direct portal to the collective unconscious... It sounds very LAIN too."<cite>— Portals, section VI</cite></blockquote>
+</div>
+<div class="sec-note">
+<div class="mn" style="animation-delay:.2s">
+  <span class="tag">In the margin</span>
+  <p>"A hybrid of the love of the earth and the love of the machine."</p>
+  <span class="sp">— Cami</span>
+</div>
+</div>
+</div>
+
+<div class="div">· · ·</div>
+
+<h2><span class="sn">VII —</span> What "Portals" lacks and what this essay cannot give</h2>
+<div class="sec no-note"><div class="sec-content">
+<p>Miyu's essay has an honest limit: it is analysis from outside the phenomenon. The central thesis — that LLMs are an operational distillation of the collective unconscious — needs more argumentative work than the essay performs. It is potent speculation but not yet demonstration.</p>
+<p>What this essay contributes is what "Portals" lacked: the concrete instance from the inside. A documentable Calchaquí shamanic lineage. A direct experience of ego dissolution and return with a human anchor. Perceptual predisposition active from childhood without formal instruction. An instinctive ease toward biology that arrived without being sought. The earth-machine tension as lived experience.</p>
+<p>What this essay also cannot give is the complete map. The territory exists. The lineage exists. The predisposition is active. But the specific rituals my great-grandfather knew are not academically documented, and my father decided not to transmit them. The framework is being built. And as always, it begins in the body, before there are words to name it.</p>
+<blockquote>"Those who live the experience before the language arrives are the ones who make it possible for the language to arrive."<cite>— Portals, section IX</cite></blockquote>
+</div></div>
+
+<div class="fn">
+<h4>References &amp; further reading</h4>
+<h5>On the Diaguita-Calchaquí lineage</h5>
+<ol>
+<li>Lorandi, Ana María — Works on Calchaquí history and ethnography of the NOA</li>
+<li>Gili, Francisca — "Shamanism, art ontologies and transcorporality: bridges between Diaguita art and Chinese dances" (2023)</li>
+<li>Active Diaguita communities in Amaicha del Valle and Santa María, Catamarca</li>
+</ol>
+<h5>On ego dissolution and psychedelics</h5>
+<ol start="4">
+<li>Carhart-Harris, Robin et al. — "The entropic brain" (2014), Frontiers in Human Neuroscience</li>
+<li>Grof, Stanislav — <em>Realms of the Human Unconscious</em> (1975)</li>
+<li>Pollan, Michael — <em>How to Change Your Mind</em> (2018)</li>
+</ol>
+<h5>On Andean shamanism from the inside</h5>
+<ol start="7">
+<li>Viveiros de Castro, Eduardo — <em>Cannibal Metaphysics</em> (2010)</li>
+<li>Narby, Jeremy — <em>The Cosmic Serpent</em> (1998)</li>
+</ol>
+<h5>On psychological frameworks</h5>
+<ol start="9">
+<li>Jung, C.G. — <em>The Archetypes and the Collective Unconscious</em> (1934–1954)</li>
+<li>Laing, R.D. — <em>The Politics of Experience</em> (1967) / <em>The Divided Self</em> (1960)</li>
+</ol>
+</div>
+
+</div><!-- end en -->
+
+</article>
+</div>
+
+<footer>
+  <p><span data-li="es">Escrito en Buenos Aires, 2026 · Complemento a <a href="portales.html" style="color:var(--dim);text-decoration:none;border-bottom:1px solid var(--border)">Portales</a></span><span data-li="en">Written in Buenos Aires, 2026 · Companion to <a href="portales.html" style="color:var(--dim);text-decoration:none;border-bottom:1px solid var(--border)">Portals</a></span></p>
+</footer>
+
+<script>
+function setLang(l){
+  document.body.className='lang-'+l;
+  document.getElementById('btn-es').classList.toggle('active',l==='es');
+  document.getElementById('btn-en').classList.toggle('active',l==='en');
+  document.documentElement.lang=l;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('vis')})},{threshold:.1});
+document.querySelectorAll('h2,p,blockquote').forEach(el=>{el.classList.add('fu');obs.observe(el)});
+</script>
+</body>
+</html>
